@@ -4,74 +4,21 @@
 
 use Modifier;
 
-impl<X, M1> Modifier<X> for (M1,)
-where M1: Modifier<X> {
-    fn modify(self, x: &mut X) {
-        self.0.modify(x);
-    }
+macro_rules! impl_modifier_tuple {
+    ($($m:ident)+) => {
+        impl<X, $($m: Modifier<X>),+> Modifier<X> for ($($m,)+) {
+            #[allow(non_snake_case)]
+            fn modify(self, x: &mut X) {
+                let ($($m,)+) = self;
+                $($m.modify(x));+
+            }
+        }
+    };
 }
 
-impl<X, M1, M2> Modifier<X> for (M1, M2)
-where M1: Modifier<X>,
-      M2: Modifier<X> {
-    fn modify(self, x: &mut X) {
-        self.0.modify(x);
-        self.1.modify(x);
-    }
-}
-
-impl<X, M1, M2, M3> Modifier<X> for (M1, M2, M3)
-where M1: Modifier<X>,
-      M2: Modifier<X>,
-      M3: Modifier<X> {
-    fn modify(self, x: &mut X) {
-        self.0.modify(x);
-        self.1.modify(x);
-        self.2.modify(x);
-    }
-}
-
-impl<X, M1, M2, M3, M4> Modifier<X> for (M1, M2, M3, M4)
-where M1: Modifier<X>,
-      M2: Modifier<X>,
-      M3: Modifier<X>,
-      M4: Modifier<X> {
-    fn modify(self, x: &mut X) {
-        self.0.modify(x);
-        self.1.modify(x);
-        self.2.modify(x);
-        self.3.modify(x);
-    }
-}
-
-impl<X, M1, M2, M3, M4, M5> Modifier<X> for (M1, M2, M3, M4, M5)
-where M1: Modifier<X>,
-      M2: Modifier<X>,
-      M3: Modifier<X>,
-      M4: Modifier<X>,
-      M5: Modifier<X> {
-    fn modify(self, x: &mut X) {
-        self.0.modify(x);
-        self.1.modify(x);
-        self.2.modify(x);
-        self.3.modify(x);
-        self.4.modify(x);
-    }
-}
-
-impl<X, M1, M2, M3, M4, M5, M6> Modifier<X> for (M1, M2, M3, M4, M5, M6)
-where M1: Modifier<X>,
-      M2: Modifier<X>,
-      M3: Modifier<X>,
-      M4: Modifier<X>,
-      M5: Modifier<X>,
-      M6: Modifier<X> {
-    fn modify(self, x: &mut X) {
-        self.0.modify(x);
-        self.1.modify(x);
-        self.2.modify(x);
-        self.3.modify(x);
-        self.4.modify(x);
-        self.5.modify(x);
-    }
-}
+impl_modifier_tuple! { M1 }
+impl_modifier_tuple! { M1 M2 }
+impl_modifier_tuple! { M1 M2 M3 }
+impl_modifier_tuple! { M1 M2 M3 M4 }
+impl_modifier_tuple! { M1 M2 M3 M4 M5 }
+impl_modifier_tuple! { M1 M2 M3 M4 M5 M6 }
